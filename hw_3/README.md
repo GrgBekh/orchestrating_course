@@ -26,25 +26,42 @@
 - **Результаты**
 
 Версия minikube
-![1](hw_3/assets/Version.PNG)
+
+![1](./assets/Version.PNG)
+
 Запуск minikube
-![2](hw_3/assets/Start.PNG)
+
+![2](./assets/Start.PNG)
+
 Контейнер minikube
-![3](hw_3/assets/Container_exist.PNG)
+
+![3](./assets/Container_exist.PNG)
+
 Создаем инстансы
-![4](hw_3/assets/Pg_configmap.PNG)
-![5](hw_3/assets/Pg_deployment.PNG)
-![6](hw_3/assets/Pg_secret.PNG)
+
+![4](./assets/Pg_configmap.PNG)
+![5](./assets/Pg_deployment.PNG)
+![6](./assets/Pg_secret.PNG)
+
 Проверяем что они появились
-![7](hw_3/assets/Get.PNG)
+
+![7](./assets/Get.PNG)
+
 Nextcloud запустился
-![8](hw_3/assets/Nextcloud.PNG)
+
+![8](./assets/Nextcloud.PNG)
+
 Nextcloud едет
-![9](hw_3/assets/NextcloudWorking.PNG)
+
+![9](./assets/NextcloudWorking.PNG)
+
 Лягущка
-![10](hw_3/assets/nextcloud_frog.PNG)
+
+![10](./assets/nextcloud_frog.PNG)
+
 Дашборд из доп задания
-![11](hw_3/assets/Dash.PNG)
+
+![11](./assets/Dash.PNG)
 
 - **Ответы на вопросы**
   - Порядок не повлияет если запустить все нужные (я удалял и запускал вроде в случайном порядке) kubernetes сам разбирается что ему нужно
