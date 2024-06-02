@@ -12,7 +12,7 @@
 
 Плохие и хорошие практики избранные мной:
 
-1) Плохо читаемый и более медленный COPY:
+1) Плохо читаемый и более медленный (не факт) COPY:
 
 COPY ./requirements.txt /app/requirements.txt
 COPY ./data /app/data
