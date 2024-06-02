@@ -1,0 +1,11 @@
+matplotlib==3.7.2
+numpy==1.24.3
+pandas==2.0.3
+scikit_learn==1.4.0
+scipy==1.11.1
+seaborn==0.13.2
+sktime==0.27.0
+tqdm==4.65.0
+tslearn==0.6.3
+umap_learn==0.5.5
+detecta==0.0.5

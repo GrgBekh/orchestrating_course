@@ -1,0 +1,14 @@
+FROM jupyterhub/jupyterhub:latest
+
+WORKDIR /app
+
+COPY ./requirements.txt /app/requirements.txt
+COPY ./data /app/data
+COPY ./notebooks /app/notebooks
+
+VOLUME ./src /app/src
+
+RUN pip install -r requirements.txt
+
+
+ENTRYPOINT jupyterhub --log-level=DEBUG
