@@ -1,0 +1,18 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: airflow-init
+spec:
+  template:
+    spec:
+      containers:
+      - name: airflow-init
+        image: my_airflow:2.7.1
+        imagePullPolicy: IfNotPresent
+        command: ["airflow", "db", "init"]
+        envFrom:
+        - configMapRef:
+            name: airflow-config
+        - secretRef:
+            name: airflow-secrets
+      restartPolicy: OnFailure
