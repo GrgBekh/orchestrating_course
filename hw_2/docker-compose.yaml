@@ -6,30 +6,23 @@ networks:
 
 x-airflow-common:
   &airflow-common
-  # In order to add custom dependencies or upgrade provider packages you can use your extended image.
-  # Comment the image line, place your Dockerfile in the directory where you placed the docker-compose.yaml
-  # and uncomment the "build" line below, Then run `docker-compose build` to build the images.
-  # image: ${AIRFLOW_IMAGE_NAME:-apache/airflow:2.7.2}
   build: .
   environment:
-    &airflow-common-env
-    AIRFLOW__CORE__EXECUTOR: LocalExecutor
-    AIRFLOW__DATABASE__SQL_ALCHEMY_CONN: postgresql+psycopg2://airflow:airflow@postgres/airflow
-    # For backward compatibility, with Airflow <2.3
-    AIRFLOW__CORE__SQL_ALCHEMY_CONN: postgresql+psycopg2://airflow:airflow@postgres/airflow
-    AIRFLOW__CORE__FERNET_KEY: ''
-    AIRFLOW__CORE__DAGS_ARE_PAUSED_AT_CREATION: 'true'
-    AIRFLOW__CORE__LOAD_EXAMPLES: 'false'
-    AIRFLOW__API__AUTH_BACKENDS: 'airflow.api.auth.backend.basic_auth,airflow.api.auth.backend.session'
-
-    AIRFLOW__SCHEDULER__ENABLE_HEALTH_CHECK: 'true'
-    _PIP_ADDITIONAL_REQUIREMENTS: ${_PIP_ADDITIONAL_REQUIREMENTS:-}
+    - AIRFLOW__CORE__EXECUTOR
+    - AIRFLOW__DATABASE__SQL_ALCHEMY_CONN
+    - AIRFLOW__CORE__SQL_ALCHEMY_CONN
+    - AIRFLOW__CORE__FERNET_KEY
+    - AIRFLOW__CORE__DAGS_ARE_PAUSED_AT_CREATION
+    - AIRFLOW__CORE__LOAD_EXAMPLES
+    - AIRFLOW__API__AUTH_BACKENDS
+    - AIRFLOW__SCHEDULER__ENABLE_HEALTH_CHECK
+    - _PIP_ADDITIONAL_REQUIREMENTS
   volumes:
     - ${AIRFLOW_PROJ_DIR:-.}/dags:/opt/airflow/dags
     - ${AIRFLOW_PROJ_DIR:-.}/logs:/opt/airflow/logs
     - ${AIRFLOW_PROJ_DIR:-.}/config:/opt/airflow/config
     - ${AIRFLOW_PROJ_DIR:-.}/plugins:/opt/airflow/plugins
-  user: "${AIRFLOW_UID:-50000}:0"
+  user: "${AIRFLOW_UID}:${AIRFLOW_GID}"
   depends_on:
     &airflow-common-depends-on
     postgres:
@@ -41,9 +34,9 @@ services:
   postgres:
     image: postgres:13
     environment:
-      POSTGRES_USER:  ${USER_NAME}
-      POSTGRES_PASSWORD:  ${USER_PASSWORD}
-      POSTGRES_DB:  ${USER_DB}
+      POSTGRES_USER: ${USER_NAME}
+      POSTGRES_PASSWORD: ${USER_PASSWORD}
+      POSTGRES_DB: ${USER_DB}
     volumes:
       - postgres-db-volume:/var/lib/postgresql/data
     healthcheck:
@@ -174,12 +167,20 @@ services:
         chown -R "${AIRFLOW_UID}:0" /sources/{logs,dags,plugins}
         exec /entrypoint airflow version
     environment:
-      <<: *airflow-common-env
-      _AIRFLOW_DB_MIGRATE: 'true'
-      _AIRFLOW_WWW_USER_CREATE: 'true'
-      _AIRFLOW_WWW_USER_USERNAME: ${USER_NAME}
-      _AIRFLOW_WWW_USER_PASSWORD: ${USER_PASSWORD}
-      _PIP_ADDITIONAL_REQUIREMENTS: ''
+      - AIRFLOW__CORE__EXECUTOR
+      - AIRFLOW__DATABASE__SQL_ALCHEMY_CONN
+      - AIRFLOW__CORE__SQL_ALCHEMY_CONN
+      - AIRFLOW__CORE__FERNET_KEY
+      - AIRFLOW__CORE__DAGS_ARE_PAUSED_AT_CREATION
+      - AIRFLOW__CORE__LOAD_EXAMPLES
+      - AIRFLOW__API__AUTH_BACKENDS
+      - AIRFLOW__SCHEDULER__ENABLE_HEALTH_CHECK
+      - _PIP_ADDITIONAL_REQUIREMENTS
+      - _AIRFLOW_DB_MIGRATE=true
+      - _AIRFLOW_WWW_USER_CREATE=true
+      - _AIRFLOW_WWW_USER_USERNAME=${USER_NAME}
+      - _AIRFLOW_WWW_USER_PASSWORD=${USER_PASSWORD}
+      - _PIP_ADDITIONAL_REQUIREMENTS
     user: "0:0"
     volumes:
       - ${AIRFLOW_PROJ_DIR:-.}:/sources
@@ -191,9 +192,16 @@ services:
     profiles:
       - debug
     environment:
-      <<: *airflow-common-env
-      CONNECTION_CHECK_MAX_COUNT: "0"
-    # Workaround for entrypoint issue. See: https://github.com/apache/airflow/issues/16252
+      - AIRFLOW__CORE__EXECUTOR
+      - AIRFLOW__DATABASE__SQL_ALCHEMY_CONN
+      - AIRFLOW__CORE__SQL_ALCHEMY_CONN
+      - AIRFLOW__CORE__FERNET_KEY
+      - AIRFLOW__CORE__DAGS_ARE_PAUSED_AT_CREATION
+      - AIRFLOW__CORE__LOAD_EXAMPLES
+      - AIRFLOW__API__AUTH_BACKENDS
+      - AIRFLOW__SCHEDULER__ENABLE_HEALTH_CHECK
+      - _PIP_ADDITIONAL_REQUIREMENTS
+      - CONNECTION_CHECK_MAX_COUNT=0
     command:
       - bash
       - -c
