@@ -7,16 +7,8 @@ networks:
 x-airflow-common:
   &airflow-common
   build: .
-  environment:
-    - AIRFLOW__CORE__EXECUTOR
-    - AIRFLOW__DATABASE__SQL_ALCHEMY_CONN
-    - AIRFLOW__CORE__SQL_ALCHEMY_CONN
-    - AIRFLOW__CORE__FERNET_KEY
-    - AIRFLOW__CORE__DAGS_ARE_PAUSED_AT_CREATION
-    - AIRFLOW__CORE__LOAD_EXAMPLES
-    - AIRFLOW__API__AUTH_BACKENDS
-    - AIRFLOW__SCHEDULER__ENABLE_HEALTH_CHECK
-    - _PIP_ADDITIONAL_REQUIREMENTS
+  env_file:
+    - .env
   volumes:
     - ${AIRFLOW_PROJ_DIR:-.}/dags:/opt/airflow/dags
     - ${AIRFLOW_PROJ_DIR:-.}/logs:/opt/airflow/logs
@@ -33,10 +25,8 @@ x-airflow-common:
 services:
   postgres:
     image: postgres:13
-    environment:
-      POSTGRES_USER: ${USER_NAME}
-      POSTGRES_PASSWORD: ${USER_PASSWORD}
-      POSTGRES_DB: ${USER_DB}
+    env_file:
+      - .env
     volumes:
       - postgres-db-volume:/var/lib/postgresql/data
     healthcheck:
@@ -166,21 +156,8 @@ services:
         mkdir -p /sources/logs /sources/dags /sources/plugins
         chown -R "${AIRFLOW_UID}:0" /sources/{logs,dags,plugins}
         exec /entrypoint airflow version
-    environment:
-      - AIRFLOW__CORE__EXECUTOR
-      - AIRFLOW__DATABASE__SQL_ALCHEMY_CONN
-      - AIRFLOW__CORE__SQL_ALCHEMY_CONN
-      - AIRFLOW__CORE__FERNET_KEY
-      - AIRFLOW__CORE__DAGS_ARE_PAUSED_AT_CREATION
-      - AIRFLOW__CORE__LOAD_EXAMPLES
-      - AIRFLOW__API__AUTH_BACKENDS
-      - AIRFLOW__SCHEDULER__ENABLE_HEALTH_CHECK
-      - _PIP_ADDITIONAL_REQUIREMENTS
-      - _AIRFLOW_DB_MIGRATE=true
-      - _AIRFLOW_WWW_USER_CREATE=true
-      - _AIRFLOW_WWW_USER_USERNAME=${USER_NAME}
-      - _AIRFLOW_WWW_USER_PASSWORD=${USER_PASSWORD}
-      - _PIP_ADDITIONAL_REQUIREMENTS
+    env_file:
+      - .env
     user: "0:0"
     volumes:
       - ${AIRFLOW_PROJ_DIR:-.}:/sources
@@ -191,17 +168,8 @@ services:
     <<: *airflow-common
     profiles:
       - debug
-    environment:
-      - AIRFLOW__CORE__EXECUTOR
-      - AIRFLOW__DATABASE__SQL_ALCHEMY_CONN
-      - AIRFLOW__CORE__SQL_ALCHEMY_CONN
-      - AIRFLOW__CORE__FERNET_KEY
-      - AIRFLOW__CORE__DAGS_ARE_PAUSED_AT_CREATION
-      - AIRFLOW__CORE__LOAD_EXAMPLES
-      - AIRFLOW__API__AUTH_BACKENDS
-      - AIRFLOW__SCHEDULER__ENABLE_HEALTH_CHECK
-      - _PIP_ADDITIONAL_REQUIREMENTS
-      - CONNECTION_CHECK_MAX_COUNT=0
+    env_file:
+      - .env
     command:
       - bash
       - -c
